@@ -1,2 +1,7 @@
+#pragma once
 
-class LinkedList {};
+template<typename NodeType>
+class LinkedList {
+    private:
+        struct Node
+};
