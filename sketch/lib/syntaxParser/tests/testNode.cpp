@@ -15,7 +15,6 @@ struct NodeValuesFixture{
     NodeValuesFixture(){
         for (char i = 'A'; i <= 'Z'; ++i) {
             nodeValues.push_back(i);
-            std::cout << "Node value added: " << i << std::endl;
         }
     }
 };
@@ -40,17 +39,26 @@ TEST_CASE_METHOD(NodeValuesFixture, "Single node next assignment"){
     Node<char> testNode('A');
     Node<char>* itNode = &testNode;
     for (const char& value : nodeValues) {
-        std::cout << "Current node value: " << itNode->getValue() << std::endl;
-        Node<char> nextNode(value);
-        itNode->setNext(&nextNode);
+        Node<char> *nextNode = new Node<char>(value);
+        itNode->setNext(nextNode);
         itNode = itNode->getNext();
     }
     itNode = &testNode;
     char value = 'A';
-    while(itNode->getNext() != nullptr) {
-        std::cout << "Current node value: " << itNode->getValue() << std::endl;
+    bool firstPass = false;
+    while(itNode != nullptr) {
         REQUIRE(itNode->getValue() == value);
         itNode = itNode->getNext();
-        // value = ; // wrap around to 'A' after 'Z'
+        if (!firstPass) {
+            firstPass = true;
+        } else {
+            value++;
+        }
     }
+}
+
+TEST_CASE("Single node with pair as value") {
+    Node<std::pair<int, int>> testNode(std::make_pair(1, 2));
+    REQUIRE(testNode.getValue().first == 1);
+    REQUIRE(testNode.getValue().second == 2);
 }
