@@ -1,5 +1,5 @@
 #define CATCH_CONFIG_MAIN
-#include "../src/linkedList.h"
+#include "../src/linkedList.hpp"
 
 #include "../external/catch.hpp"
 

@@ -7,3 +7,4 @@ include_directories(external)
 
 add_executable(test_node tests/testNode.cpp)
 add_executable(test_linkedlist tests/testLinkedList.cpp)
+add_executable(test_trie tests/testTrie.cpp)

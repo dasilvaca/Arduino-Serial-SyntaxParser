@@ -19,7 +19,11 @@ template <typename ValueType>
 Node<ValueType>* LinkedList<ValueType>::find(const ValueType& value) const {
   Node<ValueType>* current = this -> head;
   while (current) {
-    if (current->getValue() == value) {
+    //! This comparison is done by value (not by pointer)
+    //! So, when the ValueType is a kind of pointer, it will compare the
+    //! values pointed by the addresses, not whatever the pointers point to.
+    //! This must be fixed if you want to compare pointers.
+    if (current->getValue() == value) { 
       return current;
     }
     current = current->getNext();
