@@ -1,11 +1,16 @@
 #pragma once
 
+#include <functional>  // for std::equal_to
+
 #include "node.hpp"
 
 template <typename ValueType>
 class LinkedList {
+  using Comparator = std::function<bool(const ValueType&, const ValueType&)>;
+
  private:
   Node<ValueType>* head;
+  Comparator comparator;
 
  public:
   LinkedList();
@@ -16,6 +21,7 @@ class LinkedList {
   bool getFound(const ValueType& value, ValueType& out) const;
 
   void deleteValue(const ValueType& value);
+  void setComparator(Comparator comparator);
 
   void clear();
   Node<ValueType>* getHead() const;

@@ -1,2 +1,3 @@
 sketch/lib/syntaxParser/build/
 .vscode/
+*.out

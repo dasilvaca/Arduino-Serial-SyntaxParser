@@ -1,7 +1,7 @@
 #pragma once
 
 template <typename ValueType>
-LinkedList<ValueType>::LinkedList() :head(nullptr) {}
+LinkedList<ValueType>::LinkedList() : head(nullptr) {}
 
 template <typename ValueType>
 LinkedList<ValueType>::~LinkedList() {
@@ -11,20 +11,28 @@ LinkedList<ValueType>::~LinkedList() {
 template <typename ValueType>
 void LinkedList<ValueType>::insertFront(const ValueType& value) {
   auto* newNode = new Node<ValueType>(value);
-  newNode->setNext(this -> head);
-  this -> head = newNode;
+  newNode->setNext(this->head);
+  this->head = newNode;
+}
+
+template <typename ValueType>
+void LinkedList<ValueType>::setComparator(Comparator comparator) {
+  this->comparator = comparator;
 }
 
 template <typename ValueType>
 Node<ValueType>* LinkedList<ValueType>::find(const ValueType& value) const {
-  Node<ValueType>* current = this -> head;
+  Node<ValueType>* current = this->head;
   while (current) {
-    //! This comparison is done by value (not by pointer)
-    //! So, when the ValueType is a kind of pointer, it will compare the
-    //! values pointed by the addresses, not whatever the pointers point to.
-    //! This must be fixed if you want to compare pointers.
-    if (current->getValue() == value) { 
-      return current;
+    if (this->comparator == nullptr) {
+      if (current->getValue() == value) {
+        return current;
+      }
+    } else {
+      if (!this->comparator(current->getValue(), value) &&
+          !this->comparator(value, current->getValue())) {
+        return current;
+      }
     }
     current = current->getNext();
   }
@@ -59,23 +67,23 @@ bool LinkedList<ValueType>::getFound(const ValueType& value,
 
 template <typename ValueType>
 void LinkedList<ValueType>::clear() {
-  auto* current = this -> head;
+  auto* current = this->head;
   while (current) {
     auto* next = current->getNext();
     delete current;
     current = next;
   }
-  this -> head = nullptr;
+  this->head = nullptr;
 }
 
 template <typename ValueType>
 Node<ValueType>* LinkedList<ValueType>::getHead() const {
-  return this -> head;
+  return this->head;
 }
 
 template <typename ValueType>
 void LinkedList<ValueType>::deleteValue(const ValueType& value) {
-  Node<ValueType>* current = this -> head;
+  Node<ValueType>* current = this->head;
   Node<ValueType>* previous = nullptr;
 
   while (current) {
@@ -83,7 +91,7 @@ void LinkedList<ValueType>::deleteValue(const ValueType& value) {
       if (previous) {
         previous->setNext(current->getNext());
       } else {
-        this -> head = current->getNext();
+        this->head = current->getNext();
       }
       delete current;
       return;
@@ -95,5 +103,5 @@ void LinkedList<ValueType>::deleteValue(const ValueType& value) {
 
 template <typename ValueType>
 bool LinkedList<ValueType>::isEmpty() const {
-  return this -> head == nullptr;
+  return this->head == nullptr;
 }
