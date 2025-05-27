@@ -1,103 +1,95 @@
 #pragma once
 
-#include "trie.hpp"
+template <typename T>
+Trie<T>::Trie(char key) : key(key), value(), isTerminal(false) {
+  initComparator();
+}
 
-template <typename ValueType>
-Trie<ValueType>::Trie(char key) : key(key), value(), isTerminal(false) {}
-
-template <typename ValueType>
-Trie<ValueType>::~Trie() {
+template <typename T>
+Trie<T>::~Trie() {
   clear();
 }
 
-template <typename ValueType>
-char Trie<ValueType>::getKey() const {
+template <typename T>
+void Trie<T>::initComparator() {
+  children.setComparator([](const Trie<T>* a, const Trie<T>* b) {
+    return a->getKey() < b->getKey();  // strict weak ordering for equality
+  });
+}
+
+template <typename T>
+char Trie<T>::getKey() const {
   return this->key;
 }
 
-template <typename ValueType>
-ValueType* Trie<ValueType>::getValue() {
+template <typename T>
+T* Trie<T>::getValue() {
   return &value;
 }
 
-template <typename ValueType>
-void Trie<ValueType>::setValue(const ValueType& value) {
+template <typename T>
+void Trie<T>::setValue(const T& value) {
   this->value = value;
 }
 
-template <typename ValueType>
-bool Trie<ValueType>::isKey() const {
+template <typename T>
+bool Trie<T>::isKey() const {
   return this->isTerminal;
 }
 
-template <typename ValueType>
-void Trie<ValueType>::markAsTerminal(bool state /* = true */) {
+template <typename T>
+void Trie<T>::markAsTerminal(bool state) {
   this->isTerminal = state;
 }
 
-/* Comparison operator to find matching nodes into children */
-template <typename ValueType>
-bool Trie<ValueType>::operator==(const Trie<ValueType>& other) const {
-  return this->key == other.key;
-}
-
-template <typename ValueType>
-Trie<ValueType>* Trie<ValueType>::getChild(char key) const {
-  Trie<ValueType> *search = new Trie<ValueType>(key);
-  Trie<ValueType>* found = nullptr;
-  children.getFound(search, found);
-  delete search;
+template <typename T>
+Trie<T>* Trie<T>::getChild(char key) const {
+  Trie<T> temp(key);
+  Trie<T>* found = nullptr;
+  children.getFound(&temp, found);
   return found;
 }
 
-template <typename ValueType>
-Trie<ValueType>* Trie<ValueType>::addChild(char key) {
-  Trie<ValueType>* found = getChild(key);
-  if (found) return found;
+template <typename T>
+Trie<T>* Trie<T>::addChild(char key) {
+  Trie<T>* existing = getChild(key);
+  if (existing) return existing;
 
-  Trie<ValueType>* newNode = new Trie<ValueType>(key);
+  Trie<T>* newNode = new Trie<T>(key);
   children.insertFront(newNode);
   return newNode;
 }
 
-template <typename ValueType>
-void Trie<ValueType>::insert(const char* word, const ValueType& val) {
-    Trie<ValueType>* current = this;
-    
-    for (unsigned int i = 0; word[i]; ++i) {
-        char ch = word[i];
-        Trie<ValueType>* child = current->addChild(ch);
-        current = child;
-    }
-    
-    current->markAsTerminal(true);
-    if (current->getValue() == nullptr) {
-        current->setValue(val);
-    }
-}
-
-template <typename ValueType>
-Trie<ValueType>* Trie<ValueType>::find(const char* word) {
-  Trie<ValueType>* current = this;
+template <typename T>
+void Trie<T>::insert(const char* word, const T& val) {
+  Trie<T>* current = this;
 
   for (unsigned int i = 0; word[i]; ++i) {
-    char ch = word[i];
-    Trie<ValueType>* child = current->getChild(ch);
-    if (!child) return nullptr;
-    current = child;
+    current = current->addChild(word[i]);
+  }
+
+  current->markAsTerminal();
+  current->setValue(val);
+}
+
+template <typename T>
+Trie<T>* Trie<T>::find(const char* word) {
+  Trie<T>* current = this;
+
+  for (unsigned int i = 0; word[i]; ++i) {
+    current = current->getChild(word[i]);
+    if (!current) return nullptr;
   }
 
   return current->isKey() ? current : nullptr;
 }
 
-
-template <typename ValueType>
-void Trie<ValueType>::clear() {
-  Node<Trie<ValueType>*>* node = children.getHead();
+template <typename T>
+void Trie<T>::clear() {
+  Node<Trie<T>*>* node = children.getHead();
   while (node) {
-    Node<Trie<ValueType>*>* next = node->getNext();
     delete node->getValue();
-    node = next;
+    node = node->getNext();
   }
   children.clear();
 }
