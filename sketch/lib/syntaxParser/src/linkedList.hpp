@@ -4,6 +4,8 @@
 
 #include "node.hpp"
 
+namespace dataStructures {
+
 template <typename ValueType>
 class LinkedList {
   using Comparator = std::function<bool(const ValueType&, const ValueType&)>;
@@ -27,5 +29,5 @@ class LinkedList {
   Node<ValueType>* getHead() const;
   bool isEmpty() const;
 };
-
+}  // namespace dataStructures
 #include "linkedList.tpp"

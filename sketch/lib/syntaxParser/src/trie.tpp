@@ -1,5 +1,3 @@
-#pragma once
-
 template <typename T>
 Trie<T>::Trie(char key) : key(key), value(), isTerminal(false) {
   initComparator();
