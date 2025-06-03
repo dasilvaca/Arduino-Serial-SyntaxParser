@@ -11,7 +11,7 @@ class Trie {
 
   LinkedList<Trie<ValueType>*> children;
 
-  void initComparator();  // uses lambda internally
+  void initComparator(); 
 
  public:
   explicit Trie(char key = '\0');

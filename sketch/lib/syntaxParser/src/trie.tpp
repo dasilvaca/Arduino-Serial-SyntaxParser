@@ -12,9 +12,12 @@ Trie<T>::~Trie() {
 
 template <typename T>
 void Trie<T>::initComparator() {
-  children.setComparator([](const Trie<T>* a, const Trie<T>* b) {
-    return a->getKey() < b->getKey();  // strict weak ordering for equality
-  });
+  // Use a lambda to capture 'this' and call the member comparator
+  children.setComparator(
+      static_cast<bool (*)(Trie<T>* const&, Trie<T>* const&)>(
+          [](Trie<T>* const& a, Trie<T>* const& b) {
+            return a->getKey() == b->getKey();
+          }));
 }
 
 template <typename T>

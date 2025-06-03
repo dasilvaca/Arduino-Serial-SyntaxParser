@@ -15,8 +15,8 @@ class LinkedListValueFixture {
 TEST_CASE_METHOD(LinkedListValueFixture,
                  "LinkedList insert, find, getFound and clear") {
   LinkedList<char> list;
-  for (const char& value : values) {
-    list.insertFront(value);
+  for (int i = values.size() - 1; i >= 0; --i) {
+    list.insertFront(values[i]);
   }
   for (const char& value : values) {
     Node<char>* foundNode = list.find(value);
