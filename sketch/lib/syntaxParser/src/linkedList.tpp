@@ -16,7 +16,7 @@ void LinkedList<ValueType>::insertFront(const ValueType& value) {
 }
 
 template <typename ValueType>
-void LinkedList<ValueType>::setComparator(Comparator comparator) {
+void LinkedList<ValueType>::setComparator(bool (*comparator)(const ValueType&, const ValueType&)) {
   this->comparator = comparator;
 }
 
@@ -29,8 +29,7 @@ Node<ValueType>* LinkedList<ValueType>::find(const ValueType& value) const {
         return current;
       }
     } else {
-      if (!this->comparator(current->getValue(), value) &&
-          !this->comparator(value, current->getValue())) {
+      if (this->comparator(current->getValue(), value)) {
         return current;
       }
     }
